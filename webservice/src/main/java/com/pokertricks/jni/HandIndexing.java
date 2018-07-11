@@ -19,7 +19,7 @@ public class HandIndexing {
 			try {
 				System.loadLibrary("handindex");
 			}catch (UnsatisfiedLinkError e) {
-				throw new RuntimeException("Loading Failed");		
+				throw e;		
 			}
 		}
 
