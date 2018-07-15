@@ -698,6 +698,11 @@ public class Player_Module{
 	        		throw new RuntimeException("Duplicate Card");
 	            }
 	        }
+	        //check for invalid cards
+	        for(Byte card : set) {
+	        	if(51 < card || card < 0)
+	        		throw new RuntimeException("Invalid Card");
+	        }
 			bucket = ag.card_abs.get_bucket(ag.game, node, state.boardCards, state.holeCards);
 		}
 		if (verbose) {

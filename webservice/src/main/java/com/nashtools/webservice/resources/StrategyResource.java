@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.nashtools.bot.Explorer2;
 import com.nashtools.bot.framework.Action;
+import com.nashtools.bot.framework.ActionType;
 import com.nashtools.bot.framework.State;
 
 
@@ -25,9 +26,16 @@ public class StrategyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Action displayState(State state) {
-		System.out.println(System.getProperty("java.library.path"));
-		Action a = Explorer2.handleGameStateChange(state);
-		return a;
+		try {
+			Action a = Explorer2.handleGameStateChange(state);
+			return a;
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println(state);
+		}
+		Action invalid = new Action();
+		invalid.type = ActionType.INVALID;
+		return invalid;
 	}
 
 }

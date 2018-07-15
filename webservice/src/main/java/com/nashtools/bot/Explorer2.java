@@ -48,7 +48,7 @@ public class Explorer2 {
 			new HUSNGGame(95), new OpenPureCFRCardAbstractionCap(), new FullActionAbstractionThree(), new Postprocessor());
 	public static Player_Module sng10Bot = new Player_Module("H:\\SNG\\strategy10.dat", 
 			new HUSNGGame(100), new OpenPureCFRCardAbstractionCap(), new FullActionAbstractionThree(), new Postprocessor());
-	public static Player_Module sng10_5Bot = new Player_Module("H:\\SNG\\strategy10.5.dat", 
+	public static Player_Module sng10_5Bot = new Player_Module("H:\\SNG\\strategy10.5_2.dat", 
 			new HUSNGGame(105), new OpenPureCFRCardAbstractionCap(), new FullActionAbstractionThree(), new Postprocessor());
 	public static Player_Module sng11Bot = new Player_Module("H:\\SNG\\strategy11.dat", 
 			new HUSNGGame(110), new OpenPureCFRCardAbstractionCap(), new FullActionAbstractionThree(), new Postprocessor());
@@ -71,7 +71,7 @@ public class Explorer2 {
 	public static Player_Module sng19Bot = new Player_Module("H:\\SNG\\strategy19.dat", 
 			new HUSNGGame(190), new OpenPureCFRCardAbstractionCP(), new FullActionAbstractionFour(), new Postprocessor());
 	public static Player_Module capBot = new Player_Module("H:\\cap1009.dat", 
-			new CapGame(), new OpenPureCFRCardAbstractionCap(), new FullActionAbstractionThree());
+			new CapGame(), new OpenPureCFRCardAbstractionCap(), new FullActionAbstractionThree(), new Postprocessor());
 	public static Player_Module sng21Bot = new Player_Module("H:\\SNG\\strategy21.dat", 
 			new HUSNGGame(210), new OpenPureCFRCardAbstractionCP(), new FullActionAbstractionFive(), new Postprocessor());
 	public static Player_Module sng22Bot = new Player_Module("H:\\SNG\\strategy22.dat", 

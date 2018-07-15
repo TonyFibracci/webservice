@@ -71,13 +71,6 @@ public class State {
 		}
 	}
 	
-	public String toString(){
-		String res = "";
-		res += "Round: ";
-		res += round;
-		return res;
-		
-	}
 
 	public int getMaxSpent() {
 		return maxSpent;
@@ -181,6 +174,24 @@ public class State {
 
 	public void setEffectiveStackSize(float effectiveStackSize) {
 		this.effectiveStackSize = effectiveStackSize;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Street: ").append(round).append("\n");
+		if(round > 0) {
+			int numCards = round - 1 + 3;
+			sb.append("Board: ");
+			for(int i = 0; i < numCards; i++)
+				sb.append(boardCards[i]).append(" ");
+			sb.append("\n");
+		}
+		sb.append("ActingPlayer: ");
+		for(int i = 0; i < numActions[round]; i++)
+			sb.append(actingPlayer[round][i]).append(" ");
+		sb.append("\n");
+		return sb.toString();
 	}
 	
 
