@@ -7,6 +7,7 @@ public class Action {
 
 	public ActionType type;
 	public int size;
+	public boolean wasAllin;
 	
 	
 	public Action(Action a) {

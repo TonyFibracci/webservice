@@ -27,33 +27,33 @@ public class Player_Module{
 	public long[] total_num_entries;
 	private Postprocessor postprocessor;
 	
-	public Player_Module(String path, Game game, CardAbstraction cardAbstraction, ActionAbstraction action_abs){
-		this.ag = null;
-		this.verbose = true;
-		
-	
-	  /* Initialize abstract game, rng from parameters */
-	  ag = new AbstractGame(game, cardAbstraction, action_abs);
-	  
-	  /* Next, count the number of entries required per round to store the entries */
-	 num_entries_per_bucket = new long[Constants.MAX_ROUNDS ];
-	 total_num_entries = new long[Constants.MAX_ROUNDS];
-
-	  ag.count_entries( num_entries_per_bucket, total_num_entries );
-	  
-	  long tot = total_num_entries[0] + total_num_entries[1] + total_num_entries[2] + total_num_entries[3];
-
-
-	  /* Now MMAP the entire file */
-	  RandomAccessFile memoryMappedFile = null;
-	try {
-		memoryMappedFile = new RandomAccessFile(path, "r");
-	} catch (FileNotFoundException e) {
-		throw new RuntimeException(e);
-	}
-	  fc = memoryMappedFile.getChannel();
-
-	}
+//	public Player_Module(String path, Game game, CardAbstraction cardAbstraction, ActionAbstraction action_abs){
+//		this.ag = null;
+//		this.verbose = true;
+//		
+//	
+//	  /* Initialize abstract game, rng from parameters */
+//	  ag = new AbstractGame(game, cardAbstraction, action_abs);
+//	  
+//	  /* Next, count the number of entries required per round to store the entries */
+//	 num_entries_per_bucket = new long[Constants.MAX_ROUNDS ];
+//	 total_num_entries = new long[Constants.MAX_ROUNDS];
+//
+//	  ag.count_entries( num_entries_per_bucket, total_num_entries );
+//	  
+//	  long tot = total_num_entries[0] + total_num_entries[1] + total_num_entries[2] + total_num_entries[3];
+//
+//
+//	  /* Now MMAP the entire file */
+//	  RandomAccessFile memoryMappedFile = null;
+//	try {
+//		memoryMappedFile = new RandomAccessFile(path, "r");
+//	} catch (FileNotFoundException e) {
+//		throw new RuntimeException(e);
+//	}
+//	  fc = memoryMappedFile.getChannel();
+//
+//	}
 	
 	public Player_Module(String path, Game game, CardAbstraction cardAbstraction, ActionAbstraction action_abs, Postprocessor postprocessor){
 		this.ag = null;
@@ -502,7 +502,7 @@ public class Player_Module{
 	}
 	
 
-	public void get_action_probs(State state, double[] action_probs, int bucket) {
+	public boolean get_action_probs(State state, double[] action_probs, int bucket) {
 		/*
 		 * Initialize action probs to the default in case we must abort early
 		 * for one of several reasons
@@ -722,6 +722,22 @@ public class Player_Module{
 			}
 			throw new RuntimeException("Abstract round does not match current round");
 		}
+		
+		/*Check for all in*/
+		boolean wasAllin = false;
+		int current_num_actions = old_state.numActions[old_state.round];
+		if(old_state.round == 0 && current_num_actions == 0) {
+			wasAllin = false;
+		}
+		else if(current_num_actions > 0) {
+			if(old_state.action[old_state.round][current_num_actions - 1].type == ActionType.RAISE && 
+					old_state.action[old_state.round][current_num_actions - 1].size == ag.game.stack[0]){
+						wasAllin = true;
+				}
+			else
+				wasAllin = false;
+		}
+
 
 		/* Get the positive entries at this information set */
 		int num_choices = node.get_num_choices();
@@ -775,7 +791,7 @@ public class Player_Module{
 					if (verbose) {
 						System.out.println("ALL POSITIVE ENTRIES ARE ZERO\n");
 					}
-					return;
+					return wasAllin;
 				}
 				for (int c = 0; c < num_choices; ++c) {
 					action_probs[c] = 1.0 * pos_entries[c] / sum_values;
@@ -799,7 +815,7 @@ public class Player_Module{
 					if (verbose) {
 						System.out.println("ALL POSITIVE ENTRIES ARE ZERO\n");
 					}
-					return;
+					return wasAllin;
 				}
 				for (int c = 0; c < num_choices; ++c) {
 					action_probs[c] = 1.0 * pos_entries[c] / sum_values;
@@ -823,7 +839,7 @@ public class Player_Module{
 					if (verbose) {
 						System.out.println("ALL POSITIVE ENTRIES ARE ZERO\n");
 					}
-					return;
+					return wasAllin;
 				}
 				for (int c = 0; c < num_choices; ++c) {
 					action_probs[c] = 1.0 * pos_entries[c] / sum_values;
@@ -865,6 +881,7 @@ public class Player_Module{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return wasAllin;
 	}
 	
 	public static int unsignedToBytes(byte b) {
@@ -892,7 +909,7 @@ public class Player_Module{
 	
 	public Action get_action(State state){
 		double[] action_probs = new double[Constants.MAX_ABSTRACT_ACTIONS];
-		get_action_probs(state, action_probs, -1);
+		boolean wasAllin = get_action_probs(state, action_probs, -1);
 		//System.out.println(Arrays.toString(action_probs));
 		Action[] actions = new Action[Constants.MAX_ABSTRACT_ACTIONS];
 		int num_choices = ag.action_abs.get_actions(ag.game, state, actions);
@@ -903,6 +920,7 @@ public class Player_Module{
 				break;
 			dart -= action_probs[a];
 		}
+		actions[a].wasAllin = wasAllin;
 		return actions[a];
 	}
 }

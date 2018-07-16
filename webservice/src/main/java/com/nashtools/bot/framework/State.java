@@ -176,6 +176,7 @@ public class State {
 		this.effectiveStackSize = effectiveStackSize;
 	}
 	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
